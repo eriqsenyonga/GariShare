@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "874112050288",
+    "firebase_url": "https://gari-share-app.firebaseio.com",
+    "project_id": "gari-share-app",
+    "storage_bucket": "gari-share-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874112050288:android:0a8c7dad8354046b",
+        "android_client_info": {
+          "package_name": "com.plexosysconsult.garishare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874112050288-drkoobivli319cth8rvsifuub35stkuc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.plexosysconsult.garishare",
+            "certificate_hash": "f604ac21771eeb0d71169cc89cb0f8a53cbcf3a5"
+          }
+        },
+        {
+          "client_id": "874112050288-3m9edg4b538r2mjjf4jnvlkh5lola2gb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfla9cWbjmKlR5bDPaKF3E8OjannmPsIM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874112050288-3m9edg4b538r2mjjf4jnvlkh5lola2gb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
