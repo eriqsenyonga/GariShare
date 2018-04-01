@@ -5,8 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button bLogin, bRegister;
+    LinearLayout linlay_logo, linlay_details;
+    Animation upToDown, downToUp;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
@@ -49,10 +54,20 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
+        linlay_logo = (LinearLayout) findViewById(R.id.linlay_logo);
+        linlay_details = (LinearLayout) findViewById(R.id.linlay_details);
         etEmail = (EditText) findViewById(R.id.et_email);
         etPassword = (EditText) findViewById(R.id.et_password);
         bLogin = (Button) findViewById(R.id.b_login);
         bRegister = (Button) findViewById(R.id.b_register);
+
+        upToDown = AnimationUtils.loadAnimation(this, R.anim.uptodown);
+        downToUp = AnimationUtils.loadAnimation(this, R.anim.downtoup);
+        linlay_logo.setAnimation(upToDown);
+        linlay_details.setAnimation(downToUp);
+
+
+
         bRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

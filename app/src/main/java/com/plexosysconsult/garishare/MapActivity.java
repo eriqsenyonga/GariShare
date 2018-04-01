@@ -132,11 +132,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             } else {
                 // updateText(result.getContents());
 
+                //here we receive the QR of the bike and then send it to the server for opening
+
                 Toast.makeText(this, "Data" + result.getContents(), Toast.LENGTH_LONG).show();
+
+                openBikeLock();
+
+
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+
+    }
+
+    private void openBikeLock() {
+
+        /*
+         * 1. Get bike associated to QR CODE
+         * 2. Send information to server to open bike with the current userId and QR CODE
+         * 3. As soon as bike opens, start timer and track movements of the bike
+         * 4.
+         *
+         * */
+
 
     }
 
@@ -153,9 +172,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        //  LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //Latitude = 0.3360, Longitude = 32.5731 for maimood
+
+        // Add a marker at Maimood hostel and move the camera
+        LatLng maimood = new LatLng(0.3360, 32.5731);
+        // Add a marker for Akamwesi Latitude = 0.3355, Longitude = 32.5739
+        LatLng akamwesi = new LatLng(0.3355, 32.5739);
+        LatLng easternGate = new LatLng(0.3356, 32.5726);
+        LatLng rwenzoriTowers = new LatLng( 0.3168,  32.5800);
+        LatLng rwCourts = new LatLng(0.3163, 32.5802);
+        LatLng harunaTowers = new LatLng(0.3399, 32.5716);
+        LatLng kakande = new LatLng(0.3403, 32.5726);
+
+
+        mMap.addMarker(new MarkerOptions().position(maimood).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(akamwesi).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(easternGate).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(rwenzoriTowers).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(rwCourts).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(harunaTowers).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(kakande).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+
+
+
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
 
@@ -192,7 +231,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(21));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+        //  mMap.moveCamera(CameraUpdateFactory.zo);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("OnlineCustomers");
