@@ -41,78 +41,79 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-    <EditText
-        android:id="@+id/et_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/ic_person_black_24dp"
-        android:drawablePadding="12dp"
-        android:ems="10"
-        android:hint="email"
-        android:inputType="textEmailAddress"
-        android:maxLines="1"
-        android:padding="8dp"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#f9d7db" />
+        <EditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/ic_person_black_24dp"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:hint="email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
-    <EditText
-        android:id="@+id/et_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/ic_lock_black_24dp"
-        android:drawablePadding="12dp"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword"
-        android:maxLines="1"
-        android:padding="8dp"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f9d7db" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#f9d7db" />
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/ic_lock_black_24dp"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
-
-    <Button
-        android:id="@+id/b_login"
-        style="@style/Base.TextAppearance.AppCompat.Body1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/background_login"
-        android:clickable="true"
-        android:padding="16dp"
-        android:text="@string/login"
-        android:textAllCaps="false"
-        android:textColor="#f16f7d"
-        android:textSize="18sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f9d7db" />
 
 
-    <Button
-        android:id="@+id/b_register"
-        style="@style/Base.TextAppearance.AppCompat.Body1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/background_register"
-        android:clickable="true"
-        android:padding="16dp"
-        android:text="@string/register"
-        android:textAllCaps="false"
-        android:textColor="#fff"
-        android:textSize="18sp"
+        <Button
+            android:id="@+id/b_login"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/background_login"
+            android:clickable="true"
+            android:padding="16dp"
+            android:text="@string/login"
+            android:textAllCaps="false"
+            android:textColor="#f16f7d"
+            android:textSize="18sp" />
 
-        />
+
+        <Button
+            android:id="@+id/b_register"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/background_register"
+            android:clickable="true"
+            android:padding="16dp"
+            android:text="@string/register"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp"
+
+            />
 
     </LinearLayout>
 
