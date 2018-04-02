@@ -9,4 +9,7 @@
     <string name="register">Register</string>
     <string name="title_activity_map">Map</string>
     <string name="logout">Logout</string>
+    <string name="gps_network_not_enabled">GPS network not enabled</string>
+    <string name="open_location_settings">Open location settings</string>
+    <string name="Cancel">Cancel</string>
 </resources>

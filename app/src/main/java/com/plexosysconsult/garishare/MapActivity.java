@@ -1,10 +1,14 @@
 package com.plexosysconsult.garishare;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Looper;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -13,6 +17,7 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -64,8 +69,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+        checkLocationServices();
+
         bLogout = (Button) findViewById(R.id.b_logout);
         bUnlockBike = (Button) findViewById(R.id.b_unlock_bike);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -111,6 +120,43 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             }
         });
+    }
+
+    private void checkLocationServices() {
+
+        Boolean gps_enabled = false, network_enabled = false;
+
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+        }
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) {
+        }
+        if (!gps_enabled && !network_enabled) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
+            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+
+                }
+            });
+            dialog.show();
+        }
+
+
     }
 
     private void startQRScanner() {
@@ -176,7 +222,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Add a marker for Akamwesi Latitude = 0.3355, Longitude = 32.5739
         LatLng akamwesi = new LatLng(0.3355, 32.5739);
         LatLng easternGate = new LatLng(0.3356, 32.5726);
-        LatLng rwenzoriTowers = new LatLng( 0.3168,  32.5800);
+        LatLng rwenzoriTowers = new LatLng(0.3168, 32.5800);
         LatLng rwCourts = new LatLng(0.3163, 32.5802);
         LatLng harunaTowers = new LatLng(0.3399, 32.5716);
         LatLng kakande = new LatLng(0.3403, 32.5726);
@@ -191,7 +237,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(harunaTowers).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
         mMap.addMarker(new MarkerOptions().position(kakande).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
         mMap.addMarker(new MarkerOptions().position(joint).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-
 
 
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -365,6 +410,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (id == R.id.nav_map) {
             // Handle the camera action
         } else if (id == R.id.nav_my_rides) {
+            Intent i = new Intent(MapActivity.this, TripDetails.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_my_wallet) {
 

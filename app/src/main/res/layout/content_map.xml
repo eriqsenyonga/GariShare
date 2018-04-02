@@ -40,6 +40,11 @@
             android:layout_height="match_parent"
             tools:context="com.plexosysconsult.garishare.MapActivity" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
         <Button
             android:id="@+id/b_unlock_bike"
             android:paddingLeft="16dp"
