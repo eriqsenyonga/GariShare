@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -52,9 +53,9 @@ import com.google.zxing.integration.android.IntentResult;
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, NavigationView.OnNavigationItemSelectedListener {
 
     private GoogleMap mMap;
-
+    View bottomSheet, darkener;
     Button bLogout, bUnlockBike;
-
+    private BottomSheetBehavior mBottomSheetBehavior;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     LocationRequest mLocationRequest;
@@ -74,6 +75,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         bLogout = (Button) findViewById(R.id.b_logout);
         bUnlockBike = (Button) findViewById(R.id.b_unlock_bike);
+        bottomSheet = findViewById(R.id.bottom_sheet);
+        darkener = (View) findViewById(R.id.view_darkener);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -120,6 +123,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             }
         });
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBottomSheetBehavior.setPeekHeight(0);
+                    darkener.setVisibility(View.GONE);
+                }
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+
+                    darkener.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onSlide(View bottomSheet, float slideOffset) {
+            }
+        });
+
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void checkLocationServices() {
@@ -180,6 +205,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Toast.makeText(this, "Data" + result.getContents(), Toast.LENGTH_LONG).show();
 
                 openBikeLock();
+
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
 
             }
