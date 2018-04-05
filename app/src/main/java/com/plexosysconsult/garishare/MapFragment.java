@@ -1,5 +1,6 @@
 package com.plexosysconsult.garishare;
 
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,23 +8,20 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -50,8 +48,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, NavigationView.OnNavigationItemSelectedListener {
 
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+
+    View rootView;
     private GoogleMap mMap;
     View bottomSheet, darkener;
     Button bLogout, bUnlockBike;
@@ -61,54 +65,46 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     LocationRequest mLocationRequest;
     private FusedLocationProviderClient mFusedLocationClient;
 
+    public MapFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.content_map, container, false);
+
+        bLogout = (Button) rootView.findViewById(R.id.b_logout);
+        bUnlockBike = (Button) rootView.findViewById(R.id.b_unlock_bike);
+        bottomSheet = rootView.findViewById(R.id.bottom_sheet);
+        darkener = (View) rootView.findViewById(R.id.view_darkener);
+
+
+        return rootView;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
         checkLocationServices();
-
-        bLogout = (Button) findViewById(R.id.b_logout);
-        bUnlockBike = (Button) findViewById(R.id.b_unlock_bike);
-        bottomSheet = findViewById(R.id.bottom_sheet);
-        darkener = (View) findViewById(R.id.view_darkener);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-/*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        */
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         bLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 FirebaseAuth.getInstance().signOut();
-                Intent i = new Intent(MapActivity.this, LoginActivity.class);
+                Intent i = new Intent(getActivity(), LoginActivity.class);
                 startActivity(i);
-                finish();
+                // finish();
                 return;
 
             }
@@ -118,7 +114,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
 
-                // Toast.makeText(MapActivity.this, "Coming Soon. Open Scanner", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "Coming Soon. Open Scanner", Toast.LENGTH_SHORT).show();
                 startQRScanner();
 
             }
@@ -137,6 +133,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     darkener.setVisibility(View.VISIBLE);
                 }
+
             }
 
             @Override
@@ -145,13 +142,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+
     }
 
     private void checkLocationServices() {
 
         Boolean gps_enabled = false, network_enabled = false;
 
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {
@@ -161,7 +160,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         } catch (Exception ex) {
         }
         if (!gps_enabled && !network_enabled) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
             dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
                 @Override
@@ -186,23 +185,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void startQRScanner() {
 
-        new IntentIntegrator(this).initiateScan();
+       // new IntentIntegrator(getActivity()).initiateScan();
+        IntentIntegrator.forSupportFragment(MapFragment.this)
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
+                .initiateScan();
+
 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // super.onActivityResult(requestCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+       // super.onActivityResult(requestCode, resultCode, data);
+
+
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 // updateText(result.getContents());
 
                 //here we receive the QR of the bike and then send it to the server for opening
 
-                Toast.makeText(this, "Data" + result.getContents(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Data" + result.getContents(), Toast.LENGTH_LONG).show();
 
                 openBikeLock();
 
@@ -211,9 +216,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             }
         } else {
+
+            Log.d("onActivityResult", "result was null");
             super.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 
     private void openBikeLock() {
@@ -227,72 +233,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
          * */
 
 
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        //Latitude = 0.3360, Longitude = 32.5731 for maimood
-
-        // Add a marker at Maimood hostel and move the camera
-        LatLng maimood = new LatLng(0.3360, 32.5731);
-        // Add a marker for Akamwesi Latitude = 0.3355, Longitude = 32.5739
-        LatLng akamwesi = new LatLng(0.3355, 32.5739);
-        LatLng easternGate = new LatLng(0.3356, 32.5726);
-        LatLng rwenzoriTowers = new LatLng(0.3168, 32.5800);
-        LatLng rwCourts = new LatLng(0.3163, 32.5802);
-        LatLng harunaTowers = new LatLng(0.3399, 32.5716);
-        LatLng kakande = new LatLng(0.3403, 32.5726);
-        LatLng joint = new LatLng(0.3343, 32.5740);
-
-
-        mMap.addMarker(new MarkerOptions().position(maimood).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-        mMap.addMarker(new MarkerOptions().position(akamwesi).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-        mMap.addMarker(new MarkerOptions().position(easternGate).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-        mMap.addMarker(new MarkerOptions().position(rwenzoriTowers).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-        mMap.addMarker(new MarkerOptions().position(rwCourts).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-        mMap.addMarker(new MarkerOptions().position(harunaTowers).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-        mMap.addMarker(new MarkerOptions().position(kakande).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-        mMap.addMarker(new MarkerOptions().position(joint).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
-
-
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-        buildGoogleApiClient();
-        mMap.setMyLocationEnabled(true);
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mGoogleApiClient.connect();
     }
 
     @Override
@@ -335,12 +275,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
     public void onConnected(@Nullable Bundle bundle) {
+
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -349,10 +285,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //   LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, new LocationCallback() {
@@ -388,6 +324,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             }
         }, Looper.myLooper());
+
     }
 
     @Override
@@ -396,62 +333,66 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-/*
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("OnlineCustomers");
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userId);
-
-        */
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+    public void onMapReady(GoogleMap googleMap) {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        mMap = googleMap;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        //Latitude = 0.3360, Longitude = 32.5731 for maimood
+
+        // Add a marker at Maimood hostel and move the camera
+        LatLng maimood = new LatLng(0.3360, 32.5731);
+        // Add a marker for Akamwesi Latitude = 0.3355, Longitude = 32.5739
+        LatLng akamwesi = new LatLng(0.3355, 32.5739);
+        LatLng easternGate = new LatLng(0.3356, 32.5726);
+        LatLng rwenzoriTowers = new LatLng(0.3168, 32.5800);
+        LatLng rwCourts = new LatLng(0.3163, 32.5802);
+        LatLng harunaTowers = new LatLng(0.3399, 32.5716);
+        LatLng kakande = new LatLng(0.3403, 32.5726);
+        LatLng joint = new LatLng(0.3343, 32.5740);
+
+
+        mMap.addMarker(new MarkerOptions().position(maimood).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(akamwesi).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(easternGate).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(rwenzoriTowers).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(rwCourts).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(harunaTowers).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(kakande).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+        mMap.addMarker(new MarkerOptions().position(joint).title("Bike location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bike_location)));
+
+
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
 
-        return super.onOptionsItemSelected(item);
+        buildGoogleApiClient();
+        mMap.setMyLocationEnabled(true);
+
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+    protected synchronized void buildGoogleApiClient() {
 
-        if (id == R.id.nav_map) {
-            // Handle the camera action
-        } else if (id == R.id.nav_my_rides) {
-            Intent i = new Intent(MapActivity.this, TripDetails.class);
-            startActivity(i);
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
-        } else if (id == R.id.nav_my_wallet) {
-
-        } else if (id == R.id.nav_deliveries) {
-
-        } else if (id == R.id.nav_invite_friends) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        mGoogleApiClient.connect();
     }
 }
